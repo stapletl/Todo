@@ -1,26 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Titlebar from './components/Titlebar';
 import Input from './components/Input'
 import Box from '@material-ui/core/Box';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
-import { ListItem } from '@material-ui/core';
-
-function store(list) {
-  if(typeof(Storage) !== "undefined"){
-    localStorage.setItem("storedList", JSON.stringify(list));
-  }
-  else {
-    localStorage.clear();
-  }
-}
 
 export default function App() {
 
-  const [list, setlist] = useState([]);
+  const [list, setlist] = useState(JSON.parse(localStorage.getItem("storedList")));
   const [input, setinput] = useState("");
   const [comp, setcomp] = useState(false);
+
+  useEffect(() => {
+    store();
+  });
 
   function addToList() {
     if (list.some(x => x.task === input)){
@@ -31,18 +25,21 @@ export default function App() {
       setinput("");
       setlist(temp);
       setcomp(false);
-      console.log("storing: "+JSON.stringify(temp));
-      // store(temp);
     }
     else {
       alert("Your item needs a name!");
     }
   }
 
+  function store() {
+    let jsonList = JSON.stringify(list);
+    if(typeof(Storage) !== "undefined"){
+      localStorage.setItem("storedList", jsonList);
+    }
+  }
+
   function isComp() {
     setcomp(!comp);
-    // let rtrobj = localStorage.getItem("storedList")
-    // console.log("retrieved object: " + JSON.parse(rtrobj));
   }
 
   function handleKeyPress(e) {
